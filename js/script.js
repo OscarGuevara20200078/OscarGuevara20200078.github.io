@@ -1,117 +1,100 @@
+function funciones() {
+    document.getElementById("guardar").addEventListener("click", function () {
+        GuardarCarro();
+        })
 
-var tesis = 15, obras = 7, ciencias = 3, otro = 2;
-var dias, user = null, tipolibro = null, textbook, textuser,deis,fecha = new Date();
+document.getElementById("borrar").addEventListener("click", function () {
+        BorrarTabla();
+})
 
-alert("Bienvenido a la biblioteca Nashe");
-do {
-    user = prompt("Por favor digite una opción de acuerdo a lo que se dedica:\n 1. Estudiante\n 2. Profesor\n 3. Otro\n");
-    if (user == null || isNaN(user)== true || (user != 1 && user !=2 && user !=3)) {
-        alert("Error, debe ingresar un número válido (1-2-3)");
-    }
-} while (user == null || isNaN(user)== true || (user != 1 && user !=2 && user !=3));
-do {
-    tipolibro = prompt("Digite el tipo de libro que usted desea solicitar:\n 1. Ciencias Básicas y Tecnología\n 2. Tesis\n 3. Obras literarias \n 4. Otros\n");
-    if (tipolibro == null || isNaN(tipolibro)== true || (tipolibro != 1 && tipolibro!=2 && tipolibro !=3 && tipolibro !=4)) {
-        alert("Error, debe ingresar un tipo de libro válido y no vacío o caracter (1-2-3 4)");
-    }
-} while (tipolibro == null || isNaN(tipolibro)== true || (tipolibro != 1 && tipolibro!=2 && tipolibro !=3 && tipolibro !=4));
-
-if (user == 1) {
-    textuser = "Estudiante";
-    switch (tipolibro) {
-        case "1":
-            deis = tesis;
-        textbook = "Ciencias básicas y tecnología";
-            break;
-        case "2":
-            deis = tesis;
-        textbook = "Tesis";
-            break;
-        case "3":
-            deis = obras;
-        textbook = "Obras literarias";
-            break; 
-        case "4":
-            deis = otro;
-        textbook = "Otros";
-            break;     
-    }
+let clientes = document.getElementById("clientes");
+viewDates();
 }
 
-if (user == 2) {
-    textuser = "Profesor";
-    switch (tipolibro) {
-        case "1":
-        ciencias = ciencias * 2;
-        deis = ciencias;
-        textbook = "Ciencias básicas y tecnología";
-            break;
-        case "2":
-        tesis = tesis * 2;
-        deis = tesis;
-        textbook = "Tesis";
-            break;
-        case "3":
-        obras = obras * 2;
-        deis = obras;
-        textbook = "Obras literarias";
-            break; 
-        case "4":
-        otro = otro * 2;
-        deis = otro;
-        textbook = "Otros";
-            break;     
+function GuardarCarro() {
+    let nombre = document.getElementById("nombre").value;
+    let dui = document.getElementById("dui").value;
+    let nit = document.getElementById("nit").value;
+    let marca = document.getElementById("marca").value;
+    let modelo = document.getElementById("modelo").value;
+    let year = document.getElementById("year").value;
+    let color = document.getElementById("color").value;
+    let placa = document.getElementById("placa").value;
+    let fallas = document.getElementById("fallas").value;
+    let expDui = /^[0-9]\d{7}-\d{1}$/;
+    let expNit = /^[0-9]\d{3}-\d{6}-\d{3}-\d{1}$/;
+
+    clientesCarros = new Object();
+    clientesCarros.nombre = nombre;
+    clientesCarros.dui = dui;
+    clientesCarros.nit = nit;
+    clientesCarros.marca = marca;
+    clientesCarros.modelo = modelo;
+    clientesCarros.year = year;
+    clientesCarros.color = color;
+    clientesCarros.placa = placa;
+    clientesCarros.fallas = fallas ;
+    if(!ExpVal(dui, nit, expDui, expNit)){
+        return 0;
     }
+
+
+    var client={
+        nombre : nombre,
+        dui : dui,
+        nit:  nit,
+        marca: marca,
+        modelo: modelo,
+        year: year,
+        color: color,
+        placa: placa,
+        fallas: fallas
+
 }
-if (user == 3) {
-    textuser = "Usuario";
-    switch (tipolibro) {
-        case "1":
-            ciencias = 0;
-            deis = ciencias;
-        textbook = "Ciencias básicas y tecnología";
-            break;
-        case "2":
-            tesis = 0;
-            deis = tesis;
-        textbook = "Tesis";
-            break;
-        case "3":
-            obras = 0;
-            deis = obras;
-        textbook = "Obras literarias";
-            break; 
-        case "4":
-            otro = 0;
-            deis = otro;
-        textbook = "Otros";
-            break;     
+/*
+*/
+
+var datosClient=JSON.stringify(client);
+localStorage.setItem(clientesCarros.nombre, datosClient);
+console.log("cliente agregado");
+
+viewDates();
+}
+
+function BorrarTabla(){
+    localStorage.clear();
+    alert("Se limpió la tabla");
+    viewDates();
+}
+
+function ExpVal(dui, nit, expDui, expNit) {
+    if (!expDui.test(dui) || dui == "") {
+        alert("Error no ha ingresado un dui válido");
+        return false;
+    }else if (!expNit.test(nit) || nit == "")  {
+        alert("Error no ha ingresado un nit válido");
+        return false;
     }
+    return true;
 }
 
+function viewDates() {
+    let clientes = document.getElementById("clientes");
+    clientes.innerHTML = "<table id='Clientes'><tr><td class='cabeza'>Nombre</td><td class='cabeza'>DUI</td><td class='cabeza'>NIT</td><td class='cabeza'>Marca</td><td class='cabeza'>Año</td><td class='cabeza'>Placa</td><td class='cabeza'>Fallas</td></tr>";
+    clientes = document.getElementById("clientes");
+    if (localStorage.length === 0) {
+        return 0;
+    } else {
+        for (let index = 0; index < localStorage.length; index++){
+            console.log(localStorage.key(index).toString());
+            var key = localStorage.key(index);
+            let Name = localStorage.key(index).toString();
+            let duiTb = localStorage.getItem(key).toString();
+            let nitTb = localStorage.getItem(key).toString();
+                clientes.innerHTML += "<tr class='estiloTabla'><td class='estiloBody'>"+Name+"</td><td class='estiloBody'>"+duiTb+"</td><td class='estiloBody'>"+nitTb+"</td></tr>"
+        }
+        clientes.innerHTML += "</table>";
+    }
+}   
 
-
-document.write("<table>");
- document.write("<thead><tr>");
-document.write("<th scope='col'>Tipo de libro</th><th scope='col'>Tipo de usuario</th><th scope='col'>Fecha de devolución:</th></tr></thead><tbody>");
-document.write("<tr><td> "+textbook+" </td><td> "+textuser+"</td><td> "+ (((fecha.getDate()+deis) + "/" + (fecha.getMonth() +1) + "/" + fecha.getFullYear()))+"</td></tr>")
-
-
-
-document.write("</tbody></table>");
-
-
-
-
-if (totalv2 <=20 && totalv2 !=0){
-    var descuento ,descuento2, totalv3;
-    var mindesc1=80 , maxdesc1=100;
-    descuento = Math.random( (maxdesc1 - mindesc1) + mindesc1).toFixed(2);
-    alert(descuento);
-    alert(descuento2=descuento*totalv2)
-    alert(totalv3=totalv2-descuento2)
-    
-}
-
-
-
+window.onload = funciones;
